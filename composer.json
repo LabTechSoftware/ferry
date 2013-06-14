@@ -7,19 +7,12 @@
             "email": "azavala@labtechsoftware.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url":  "git@labtech-software.beanstalkapp.com:/ferry.git"
-        }
-    ],
     "require": {
-        "php": ">=5.3.0",
-        "illuminate/support": "4.0.x"
+        "php": ">=5.3.0"
     },
     "autoload": {
         "psr-0": {
-            "Labtech\\Ferry": "src/"
+            "Labtech\\Bones": "src/"
         }
     },
     "minimum-stability": "dev"
