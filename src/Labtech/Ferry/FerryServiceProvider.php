@@ -1,6 +1,7 @@
 <?php namespace Labtech\Ferry;
 
-use Illuminate\Support\ServiceProvider;
+use \App,
+	Illuminate\Support\ServiceProvider;
 
 class FerryServiceProvider extends ServiceProvider {
 
