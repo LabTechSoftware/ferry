@@ -58,12 +58,10 @@ class RequestParams
      **/
     public static function clear($key)
     {
-        if (array_key_exists($key, static::$params) !== true)
+        if (array_key_exists($key, static::$params) === true)
         {
-            throw new FerryException('Cannot clear parameter, key does not exist.');
+            unset(static::$params[$key]);
         }
-
-        unset(static::$params[$key]);
     }
 
     /**
