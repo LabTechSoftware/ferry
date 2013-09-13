@@ -10,43 +10,55 @@ use stdClass,
  */
 class RequestParams
 {
-    public static $params = array();
+    protected static $params = array();
 
     /**
      * Set a parameter 
      *
+     * @throws Ferry/FerryException
      * @param mixed (string/integer) $key
-     * @param mixed
+     * @param mixed $value
      * @return void
      */
     public static function set($key, $value)
     {
-        if (array_key_exists($key, static::$params) === true)
+        // Is there a param with this key already?
+        if (array_key_exists($key, self::$params) === true)
         {
-            if (is_array(static::$params[$key]) === true)
+            // Is the stored item an array?
+            if (is_array(self::$params[$key]) === true)
             {
+                // Is the new value an array?
                 if (is_array($value) === true)
                 {
-                    $mergedParams = array_merge($value, static::$params[$key]);
-                    static::$params[$key] = $mergedParams;
+                    // Merge new value with existing stored array items under this key
+                    $mergedParams = array_merge($value, self::$params[$key]);
+
+                    // Save merged data
+                    self::$params[$key] = $mergedParams;
                 }
                 else
                 {
-                    array_push(static::$params[$key], $value);
+                    // The new value is not an array
+                    // Add the new value at the end of the stored data array
+                    array_push(self::$params[$key], $value);
                 }
             }
-            elseif (is_string(static::$params[$key]) === true)
+            elseif (is_string(self::$params[$key]) === true) // Is there a string already stored w/ this key?
             {
-                static::$params[$key] .= $value;
+                // Overwrite what's stored already
+                self::$params[$key] = $value;
             }
             else
             {
-                throw new FerryException('Invalid set parameter key/value.');
+                // Unknown stored parameter
+                throw new FerryException('Stored parameter is not an array or string.');
             }
         }
         else
         {
-            static::$params[$key] = $value;
+            // New param item, add key => val
+            self::$params[$key] = $value;
         }   
     }
 
@@ -58,26 +70,30 @@ class RequestParams
      **/
     public static function clear($key)
     {
-        if (array_key_exists($key, static::$params) === true)
+        // Make sure it exists first
+        if (array_key_exists($key, self::$params) === true)
         {
-            unset(static::$params[$key]);
+            // Unset
+            unset(self::$params[$key]);
         }
     }
 
     /**
      * Set multiple parameters
      *
-     * @throws FerryException
+     * @throws Ferry\FerryException
      * @param array $params
      * @return void
      */
     public static function setMultiple(array $params)
     {
+        // Make sure there is data in the params argument
         if (count($params) <= 0)
         {
             throw new FerryException('Unable to set multiple request parameters with empty array.');
         }
 
+        // Loop through params and run each through set()
         foreach ($params as $paramKey => $paramVal)
         {
             static::set($paramKey, $paramVal);
@@ -87,23 +103,25 @@ class RequestParams
     /**
      * Get a parameter
      *
-     * @throws FerryException
+     * @throws Ferry\FerryException
      * @param mixed (string/integer)
      * @return mixed
      */
     public static function get($key)
     {
+        // Check value for string or integer type
         if (is_string($key) === false OR is_integer($key) === false)
         {
             throw new FerryException('Parameter key can only be a string or integer.');
         }
 
-        if (array_key_exists($key, static::$params) !== true)
+        // Check existence in stored params
+        if (array_key_exists($key, self::$params) !== true)
         {
             throw new FerryException('Parameter does not exist.');
         }
 
-        return static::$params[$key];
+        return self::$params[$key];
     }
 
     /**
@@ -113,7 +131,7 @@ class RequestParams
      */
     public static function getAll()
     {
-        return static::$params;
+        return self::$params;
     }
 
     /**
@@ -125,6 +143,7 @@ class RequestParams
     {
         $retClass = new stdClass;
 
+        // Loop through all stored params and add in object as property = value
         foreach (static::getAll() as $parKey => $parVal)
         {
             $retClass->$parKey = $parVal;
