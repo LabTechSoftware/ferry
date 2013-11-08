@@ -112,6 +112,16 @@ class CurlConnection implements ConnectionInterface
     }
 
     /**
+     * Look up errors from the previous request
+     *
+     * @return string
+     **/
+    public function errors()
+    {
+        return curl_error($this->_curlConn);
+    }
+
+    /**
      * Set the HTTP Content Type
      *
      * @return void 
